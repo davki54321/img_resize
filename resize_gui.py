@@ -265,7 +265,7 @@ class Window:
         self.percent.grid(column=0, row=2, pady=7, sticky="e")   
 
         percent_label = tk.Label(self.resize_input_frame, 
-                                text="(i.e. 0.5 will be 50%)",
+                                text="(i.e. 50 will be 50%)",
                                 font=("Helvetica 9 italic"),
                                 padx=7,
                                 bg=self.bg_color)
@@ -330,15 +330,15 @@ class Window:
 
     # runs program after resize button has been clicked
     def check_dir_resize(self):
-        user_resize = self.resize_opt.get()
-        # print(f"user_resize = {user_resize}")
-        # print(type(user_resize))
+        self.user_resize = self.resize_opt.get()
+        # print(f"self.user_resize = {self.user_resize}")
+        # print(type(self.user_resize))
 
         if not self.filepath:
             print("338, self.filepath must be selected")
         
         # if "width only" selected
-        elif user_resize == 0:
+        elif self.user_resize == 0:
             print("342, resize == 0")
             try:
                 self.new_width = int(self.width_only.get())
@@ -349,7 +349,7 @@ class Window:
                 self.check_save_opt()
                 
             except ValueError:
-                print("350, width value error")
+                print("352, width value error")
                 # self.new_width = int(self.width_only.get())
                 # print(f"self.new_width = {self.new_width}")
                 # print(type(self.new_width))
@@ -358,8 +358,8 @@ class Window:
                 # pop up window for error
 
         # if "height only" selected
-        elif user_resize == 1:
-            print("360, resize == 1")
+        elif self.user_resize == 1:
+            print("362, resize == 1")
             try:
                 self.new_height = int(self.height_only.get())
 
@@ -370,18 +370,18 @@ class Window:
                 self.check_save_opt()
 
             except ValueError:
-                print("369, height value error")
+                print("373, height value error")
                 # TODO
                 # pop up window for error
 
         # if user chose percentage
-        elif user_resize == 2:
-            print("375, resize == 2")
+        elif self.user_resize == 2:
+            print("379, resize == 2")
             try:
                 self.new_percent = float(self.percent.get())
 
                 # check to see what legitimate value was entered
-                if self.new_percent < 0.01 or self.new_percent > 3.0:
+                if self.new_percent < 1 or self.new_percent > 300:
                     raise ValueError
 
                 self.check_save_opt()
@@ -391,8 +391,8 @@ class Window:
                 # TODO
                 # pop up window for error
 
-        elif user_resize == 3:
-            print("389 resize == 3")
+        elif self.user_resize == 3:
+            print("395 resize == 3")
             try:
                 self.new_width = int(self.custom_width.get())
                 self.new_height = int(self.custom_height.get())
@@ -406,9 +406,9 @@ class Window:
                 self.check_save_opt()
                 
             except ValueError:
-                print("401, height and width error")
+                print("409, height and width error")
                 # TODO
-                # pop up window for error          
+                # pop up window for error       
 
 
     # checks which save option was chosen
@@ -463,80 +463,70 @@ class Window:
                 img_width, img_height = img.size
 
                 # if "width only" is chosen
-                if self.resize_opt == 0:
+                if self.user_resize == 0:
+                    print("467, resize_opt == 0")
                     self.new_height = int((img_height * self.new_width) / img_width)
 
                 # if "height only" is chosen
-                elif self.resize_opt == 1:
-                    self.new_width = int((img_width * self.new_height) / img_width)
+                elif self.user_resize == 1:
+                    print("472, resize_opt == 1")
+                    self.new_width = int((img_width * self.new_height) / img_height)
 
-                # if percentage is chosen
-                elif self.resize_opt == 2:
-                    self.new_width = int(img_width * self.new_percent)
-                    self.new_height = int(img_height * self.new_percent)
+                # if percent is chosen
+                elif self.user_resize == 2:
+                    print("477, resize_opt == 2")
+                    self.new_width = int(img_width * (self.new_percent / 100))
+                    self.new_height = int(img_height * (self.new_percent / 100))
 
-                # if new height and new width chosen
-                elif self.resize_opt == 3:
-                    pass
+                # # if new height and new width chosen
+                # # (not needed because width and height already defined by user)
+                # elif self.user_resize == 3:
+                #     pass
                 
 
-                print(f"471, self.new_width = {self.new_width}")
+                print(f"487, self.new_width = {self.new_width}")
                 print(f"\tself.new_height = {self.new_height}")
                 # stores resized image in variable
                 img = img.resize((self.new_width, self.new_height))
 
-
-        # TODO  #################################### 
-        # check "double_check" method 
-        # save file
-
                 if self.check_double_bool:
-                    new_file = self.check_double(file)
-
+                    new_file_path = self.check_double(file)
                 else:
-                    newfile = self.new_path+"/"+file 
+                    new_file_path = self.new_path+"/"+file 
 
 
-                # # if file already exists then duplicate created
-                # if self.save_opt == :
-                #     pass
-
-                # # if files already exists than it is overwritten
-                # else:
-                #     pass
-
-                # save_location = path_new+"/"+file
-
+                # from resize.cli / / / // / / / ////////////////////
+                # save_location = self.new_path+"/"+file
                 # save_location = check_dbl(path_new, directory, file)
-
                 # img = Image.open(f_img)
                 # width, height = img.size
                 # img = img.resize((int(width * PERCENT), int(height * PERCENT)))
-                # # print(f"save_location = {save_location}")
-                # img.save(save_location)
-            
+                
+                # print(f"save_location = {save_location}")
+                img.save(new_file_path)
+
             else:
                 self.skipped_counter += 1
 
 
     # checks the new directory if a file with the same name already exists
-    def check_double(self, file1, double_counter=""): 
     # file1 is the name of the file
     # "double_counter" is the end number for the new file
+    def check_double(self, file1, double_counter=""): 
 
         # for first call of function
         if not double_counter:
             # Checks if file with same name exists in the new directory
-            new_file = self.new_path + "/" + file1
+            new_file = self.new_path+"/"+file1
             if os.path.exists(new_file):
-                    double_counter = 1
-                    return self.check_double(file1, double_counter)
+                double_counter = 1
+                new_file = self.check_double(file1, double_counter)
             # if file with the same name does not exist in the directory
-            else:
-                return new_file
-
+            return new_file
+            
         # for every call after the first     
         else:
+            print(f"530, double_counter = {double_counter}")
             # checks ending of the file
             if file1.endswith(".jpeg"):
                 end = ".jpeg"
@@ -545,18 +535,20 @@ class Window:
             elif file1.endswith(".png"):
                 end = ".png"
 
-
             # "numbered_file" is the new name with a number appended to the end
             numbered_file = file1.replace(end, f"({double_counter}){end}", 1)
             # "new_file" is the name of the directory and the file together
-            new_file = self.new_path+ "/" + numbered_file
+            new_file = self.new_path+"/"+numbered_file
+
+            print(f"numbered_file = {numbered_file}")
+            print(f"new_file = {new_file}")
+            print(f"file1 = {file1}")
             
             if os.path.exists(new_file):
                 double_counter += 1
-                return self.check_double(file1, double_counter)
+                new_file = self.check_double(file1, double_counter)
             
-            else:  
-                return new_file
+            return new_file
 
 
 def main():
