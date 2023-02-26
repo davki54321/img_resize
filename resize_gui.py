@@ -207,9 +207,129 @@ class Window:
                             padx=0,
                             pady=5,
                             text=text, 
-                            variable=self.resize_opt, 
+                            variable=self.resize_opt,
+                            command=self.radio_resize_click, 
                             value=number).grid(column=0, row=i, sticky="w")
             i += 1
+
+        self.radio_resize_click()
+
+
+
+        # # creates frame within "self.resize_frame" with input boxes for the different options
+        # self.resize_input_frame = tk.Frame(self.resize_frame,
+        #                                     bg=self.bg_color,
+        #                                     height=155,
+        #                                     width=200)
+        # self.resize_input_frame.place(relx = 0.5,
+        #                                 rely = 0.25)
+        
+        # # entry widget for width only
+        # self.width_only = tk.Entry(self.resize_input_frame, 
+        #                             bd=1,
+        #                             width=10,
+        #                             justify="center",
+        #                             relief="raised")
+        # self.width_only.grid(column=0, 
+        #                      row=0, 
+        #                      pady=7, 
+        #                      sticky="e")
+
+        # width_label = tk.Label(self.resize_input_frame, 
+        #                        text="(number of pixels, i.e. 300)",
+        #                        font=("Helvetica 9 italic"),
+        #                        padx=7,
+        #                        bg=self.bg_color)
+        # width_label.grid(column=1, 
+        #                  row=0,
+        #                  sticky="w")
+
+        # # entry widget for height only
+        # self.height_only = tk.Entry(self.resize_input_frame, 
+        #                             bd=1,
+        #                             width=10,
+        #                             justify="center",
+        #                             relief="raised")
+        # self.height_only.grid(column=0, row=1, pady=7, sticky="e")
+
+        # height_label = tk.Label(self.resize_input_frame, 
+        #                        text="(number of pixels, i.e. 300)",
+        #                        font=("Helvetica 9 italic"),
+        #                        padx=7,
+        #                        bg=self.bg_color)
+        # height_label.grid(column=1, 
+        #                   row=1,
+        #                   sticky="w")
+
+        # # entry widget for percent
+        # self.percent = tk.Entry(self.resize_input_frame, 
+        #                             bd=1,
+        #                             width=10,
+        #                             justify="center",
+        #                             relief="raised")
+        # self.percent.grid(column=0, row=2, pady=7, sticky="e")   
+
+        # percent_label = tk.Label(self.resize_input_frame, 
+        #                         text="(i.e. 50 will be 50%)",
+        #                         font=("Helvetica 9 italic"),
+        #                         padx=7,
+        #                         bg=self.bg_color)
+        # percent_label.grid(column=1, 
+        #                    row=2,
+        #                    sticky="w")
+
+        # # entry widget for custom width
+        # self.custom_width = tk.Entry(self.resize_input_frame, 
+        #                                 bd=1,
+        #                                 width=10,
+        #                                 justify="center",
+        #                                 relief="raised")
+        # self.custom_width.grid(column=0,
+        #                         row=3, 
+        #                         pady=7, 
+        #                         sticky="e")
+
+        # custom_width_label = tk.Label(self.resize_input_frame, 
+        #                                 text="(width)",
+        #                                 font=("Helvetica 9 italic"),
+        #                                 padx=14,
+        #                                 bg=self.bg_color)
+        # custom_width_label.grid(column=0, 
+        #                          row=4)        
+
+        # # entry widget for custom height
+        # self.custom_height = tk.Entry(self.resize_input_frame,
+        #                                 bd=1,
+        #                                 width=10,
+        #                                 justify="center",
+        #                                 relief="raised")
+        # self.custom_height.grid(column=1,
+        #                         row=3, 
+        #                         pady=7, 
+        #                         padx=10, 
+        #                         sticky="w")
+
+        # custom_height_label = tk.Label(self.resize_input_frame, 
+        #                                 text="(height)",
+        #                                 font=("Helvetica 9 italic"),
+        #                                 bg=self.bg_color)
+        # custom_height_label.grid(column=1, 
+        #                          row=4,
+        #                          padx=14,
+        #                          sticky="w")
+
+
+    def radio_resize_click(self):
+        # self.user_resize = self.resize_opt.get()
+        # if self.user_resize == 0:
+        #     pass
+        # elif self.user_resize == 1:
+        #     pass
+        # elif self.user_resize == 2:
+        #     pass
+        # elif self.user_resize == 3:
+        #     pass
+
 
         # creates frame within "self.resize_frame" with input boxes for the different options
         self.resize_input_frame = tk.Frame(self.resize_frame,
@@ -311,7 +431,10 @@ class Window:
         custom_height_label.grid(column=1, 
                                  row=4,
                                  padx=14,
-                                 sticky="w")                            
+                                 sticky="w")
+
+
+                       
             
 
     # button at bottom of window to run program
@@ -330,7 +453,9 @@ class Window:
 
     # runs program after resize button has been clicked
     def check_dir_resize(self):
-        self.user_resize = self.resize_opt.get()
+        # # called by radio_resize_click
+        # self.user_resize = self.resize_opt.get()
+
         # print(f"self.user_resize = {self.user_resize}")
         # print(type(self.user_resize))
 
