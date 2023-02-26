@@ -4,7 +4,7 @@
 from PIL import Image
 import os
 import tkinter as tk
-from tkinter import filedialog, ttk
+from tkinter import filedialog
 
 
 class Window:
@@ -15,14 +15,19 @@ class Window:
         self.root.geometry("600x500")
 
         # background color for subframes
-        self.bg_color = "#F9F9DD"
-        
+        self.bg_color = "#DEF7FF"
+        # background color for active entry widgets
+        self.active_entry_bg = "#FFFAC3"
+        # background color for disabled entry fields
+        self.disabled_entry_bg = "#DCDCDC"
+        # "resize images" button color
+        self.resize_btn_bg = "#C3FFD7"
+        # "resize images" button hover color
+        self.resize_btn_hover = "#BAFFD6"
         # filepath of folder containing files
         self.filepath = None
-
         # name for new directory to save new files
         self.new_dir_name = "resized"
-
         # Bool to see if files should be overwritten or not
         self.check_double_bool = False
 
@@ -31,16 +36,18 @@ class Window:
         self.resize_options()
         self.save_options()
         self.run_btn()
-        # self.start()
+        self.run_btn_hover()
 
 
-    # Initializes directory button
-    def start(self):
-        self.filepath = None
-        self.choose_dir()
-        self.resize_options()
-        self.save_options()
-        self.run_btn()
+    # TODO 
+    # create new folder if new folder already exists
+    # create pop up window for
+
+
+    # from https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
+    def limit_width_only(self, str_var, *args):
+        value = str_var.get()
+        if len(value) > 2: str_var.set(value[:4])
 
 
     # makes header or title of program
@@ -73,7 +80,7 @@ class Window:
                                   width=290,
                                   bd=1,
                                   relief="raised")
-        # Creates a frame with fixed sized (will not resize 3ith different number of widgets)
+        # Creates a frame with fixed sized (will not resize with different number of widgets)
         # Fixed height and width must be entered (line above)
         self.dir_frame.grid_propagate(False)
         self.dir_frame.place(relx = 0.012,
@@ -81,9 +88,9 @@ class Window:
 
         select_btn = tk.Button(self.dir_frame,
                                 text="select directory",
+                                font=("Helvetica 10"),
                                 command=self.select_dir)
         self.dir_frame.grid_columnconfigure(0, weight=1)
-        # select_btn.grid(column=0, row=0)
         select_btn.place(relx = 0.5,
                             rely = 0.2,
                             anchor = "center")
@@ -137,7 +144,7 @@ class Window:
                                        bg=self.bg_color,
                                        height=70,
                                        width=70,)
-        self.save_btn_frame.place(relx = 0.11,
+        self.save_btn_frame.place(relx = 0.07,
                                     rely = 0.32)
         
         # creates radio buttons for save options
@@ -153,7 +160,8 @@ class Window:
         for text, number in OPTIONS:
             tk.Radiobutton(self.save_btn_frame,
                             bg=self.bg_color,
-                            text=text, 
+                            text=text,
+                            font=("Helvetica 9"), 
                             variable=self.save_opt, 
                             value=number).pack(anchor="w")
 
@@ -206,7 +214,8 @@ class Window:
                             bg=self.bg_color,
                             padx=0,
                             pady=5,
-                            text=text, 
+                            text=text,
+                            font=("Helvetica 10"), 
                             variable=self.resize_opt,
                             command=self.radio_resize_click, 
                             value=number).grid(column=0, row=i, sticky="w")
@@ -215,121 +224,10 @@ class Window:
         self.radio_resize_click()
 
 
-
-        # # creates frame within "self.resize_frame" with input boxes for the different options
-        # self.resize_input_frame = tk.Frame(self.resize_frame,
-        #                                     bg=self.bg_color,
-        #                                     height=155,
-        #                                     width=200)
-        # self.resize_input_frame.place(relx = 0.5,
-        #                                 rely = 0.25)
-        
-        # # entry widget for width only
-        # self.width_only = tk.Entry(self.resize_input_frame, 
-        #                             bd=1,
-        #                             width=10,
-        #                             justify="center",
-        #                             relief="raised")
-        # self.width_only.grid(column=0, 
-        #                      row=0, 
-        #                      pady=7, 
-        #                      sticky="e")
-
-        # width_label = tk.Label(self.resize_input_frame, 
-        #                        text="(number of pixels, i.e. 300)",
-        #                        font=("Helvetica 9 italic"),
-        #                        padx=7,
-        #                        bg=self.bg_color)
-        # width_label.grid(column=1, 
-        #                  row=0,
-        #                  sticky="w")
-
-        # # entry widget for height only
-        # self.height_only = tk.Entry(self.resize_input_frame, 
-        #                             bd=1,
-        #                             width=10,
-        #                             justify="center",
-        #                             relief="raised")
-        # self.height_only.grid(column=0, row=1, pady=7, sticky="e")
-
-        # height_label = tk.Label(self.resize_input_frame, 
-        #                        text="(number of pixels, i.e. 300)",
-        #                        font=("Helvetica 9 italic"),
-        #                        padx=7,
-        #                        bg=self.bg_color)
-        # height_label.grid(column=1, 
-        #                   row=1,
-        #                   sticky="w")
-
-        # # entry widget for percent
-        # self.percent = tk.Entry(self.resize_input_frame, 
-        #                             bd=1,
-        #                             width=10,
-        #                             justify="center",
-        #                             relief="raised")
-        # self.percent.grid(column=0, row=2, pady=7, sticky="e")   
-
-        # percent_label = tk.Label(self.resize_input_frame, 
-        #                         text="(i.e. 50 will be 50%)",
-        #                         font=("Helvetica 9 italic"),
-        #                         padx=7,
-        #                         bg=self.bg_color)
-        # percent_label.grid(column=1, 
-        #                    row=2,
-        #                    sticky="w")
-
-        # # entry widget for custom width
-        # self.custom_width = tk.Entry(self.resize_input_frame, 
-        #                                 bd=1,
-        #                                 width=10,
-        #                                 justify="center",
-        #                                 relief="raised")
-        # self.custom_width.grid(column=0,
-        #                         row=3, 
-        #                         pady=7, 
-        #                         sticky="e")
-
-        # custom_width_label = tk.Label(self.resize_input_frame, 
-        #                                 text="(width)",
-        #                                 font=("Helvetica 9 italic"),
-        #                                 padx=14,
-        #                                 bg=self.bg_color)
-        # custom_width_label.grid(column=0, 
-        #                          row=4)        
-
-        # # entry widget for custom height
-        # self.custom_height = tk.Entry(self.resize_input_frame,
-        #                                 bd=1,
-        #                                 width=10,
-        #                                 justify="center",
-        #                                 relief="raised")
-        # self.custom_height.grid(column=1,
-        #                         row=3, 
-        #                         pady=7, 
-        #                         padx=10, 
-        #                         sticky="w")
-
-        # custom_height_label = tk.Label(self.resize_input_frame, 
-        #                                 text="(height)",
-        #                                 font=("Helvetica 9 italic"),
-        #                                 bg=self.bg_color)
-        # custom_height_label.grid(column=1, 
-        #                          row=4,
-        #                          padx=14,
-        #                          sticky="w")
-
-
+    # creates frame within "self.resize_frame" with the entry widgets for resizing
     def radio_resize_click(self):
-        # self.user_resize = self.resize_opt.get()
-        # if self.user_resize == 0:
-        #     pass
-        # elif self.user_resize == 1:
-        #     pass
-        # elif self.user_resize == 2:
-        #     pass
-        # elif self.user_resize == 3:
-        #     pass
-
+        self.user_resize = self.resize_opt.get()
+        print(f"324, self.user_resize = {self.user_resize}")
 
         # creates frame within "self.resize_frame" with input boxes for the different options
         self.resize_input_frame = tk.Frame(self.resize_frame,
@@ -339,12 +237,44 @@ class Window:
         self.resize_input_frame.place(relx = 0.5,
                                         rely = 0.25)
         
+        # from https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
+        # variables used to limit number of characters in entry widget
+        self.limit_width = tk.StringVar()
+        self.limit_height = tk.StringVar()
+        self.limit_percent = tk.StringVar()
+        self.limit_width_custom = tk.StringVar()
+        self.limit_height_custom = tk.StringVar()
+        
+        # if "width only" chosen
+        if self.user_resize == 0:
+            self.limit_width.trace("w", lambda *args, passed = self.limit_width: self.limit_width_only(passed, *args))
+        
+        # if "height only" chosen
+        elif self.user_resize == 1:
+            self.limit_height.trace("w", lambda *args, passed = self.limit_height: self.limit_width_only(passed, *args))
+
+        # if "percent" chosen
+        elif self.user_resize == 2:
+            self.limit_percent.trace("w", lambda *args, passed = self.limit_percent: self.limit_width_only(passed, *args))
+
+        # if "width and height" chosen
+        elif self.user_resize == 3:
+            self.limit_width_custom.trace("w", lambda *args, passed = self.limit_width_custom: self.limit_width_only(passed, *args))
+            self.limit_height_custom.trace("w", lambda *args, passed = self.limit_height_custom: self.limit_width_only(passed, *args))
+
         # entry widget for width only
         self.width_only = tk.Entry(self.resize_input_frame, 
                                     bd=1,
-                                    width=10,
+                                    width=7,
+                                    bg=self.active_entry_bg,
                                     justify="center",
-                                    relief="raised")
+                                    relief="raised",
+                                    textvariable=self.limit_width,
+                                    font=("Helvetica", 11))
+        # disables entry field if "width only" radio button not selected
+        if self.user_resize != 0:
+            self.width_only.config(state="disabled",
+                                    disabledbackground=self.disabled_entry_bg)
         self.width_only.grid(column=0, 
                              row=0, 
                              pady=7, 
@@ -362,10 +292,20 @@ class Window:
         # entry widget for height only
         self.height_only = tk.Entry(self.resize_input_frame, 
                                     bd=1,
-                                    width=10,
+                                    width=7,
+                                    bg=self.active_entry_bg,
                                     justify="center",
-                                    relief="raised")
-        self.height_only.grid(column=0, row=1, pady=7, sticky="e")
+                                    relief="raised",
+                                    textvariable=self.limit_height,
+                                    font=("Helvetica", 11))
+        # disables entry field if "width only" radio button not selected
+        if self.user_resize != 1:
+            self.height_only.config(state="disabled",
+                                    disabledbackground=self.disabled_entry_bg)        
+        self.height_only.grid(column=0, 
+                              row=1, 
+                              pady=7, 
+                              sticky="e")
 
         height_label = tk.Label(self.resize_input_frame, 
                                text="(number of pixels, i.e. 300)",
@@ -378,11 +318,21 @@ class Window:
 
         # entry widget for percent
         self.percent = tk.Entry(self.resize_input_frame, 
-                                    bd=1,
-                                    width=10,
-                                    justify="center",
-                                    relief="raised")
-        self.percent.grid(column=0, row=2, pady=7, sticky="e")   
+                                bd=1,
+                                width=7,
+                                bg=self.active_entry_bg,
+                                justify="center",
+                                relief="raised",
+                                textvariable=self.limit_percent,
+                                font=("Helvetica", 11))
+        # disables entry field if "percent" radio button not selected
+        if self.user_resize != 2:
+            self.percent.config(state="disabled",
+                                disabledbackground=self.disabled_entry_bg)   
+        self.percent.grid(column=0, 
+                          row=2, 
+                          pady=7, 
+                          sticky="e")   
 
         percent_label = tk.Label(self.resize_input_frame, 
                                 text="(i.e. 50 will be 50%)",
@@ -396,9 +346,16 @@ class Window:
         # entry widget for custom width
         self.custom_width = tk.Entry(self.resize_input_frame, 
                                         bd=1,
-                                        width=10,
+                                        width=7,
+                                        bg=self.active_entry_bg,
                                         justify="center",
-                                        relief="raised")
+                                        relief="raised",
+                                        textvariable=self.limit_width_custom,
+                                        font=("Helvetica", 11))
+        # disables entry field if "custom width and height" radio button not selected
+        if self.user_resize != 3:
+            self.custom_width.config(state="disabled",
+                                    disabledbackground=self.disabled_entry_bg)   
         self.custom_width.grid(column=0,
                                 row=3, 
                                 pady=7, 
@@ -408,16 +365,23 @@ class Window:
                                         text="(width)",
                                         font=("Helvetica 9 italic"),
                                         padx=14,
-                                        bg=self.bg_color)
+                                        bg=self.bg_color)       
         custom_width_label.grid(column=0, 
                                  row=4)        
 
         # entry widget for custom height
         self.custom_height = tk.Entry(self.resize_input_frame,
                                         bd=1,
-                                        width=10,
+                                        width=7,
+                                        bg=self.active_entry_bg,
                                         justify="center",
-                                        relief="raised")
+                                        relief="raised",
+                                        textvariable=self.limit_height_custom,
+                                        font=("Helvetica", 11))
+        # disables entry field if "custom width and height" radio button not selected
+        if self.user_resize != 3:
+            self.custom_height.config(state="disabled",
+                                        disabledbackground=self.disabled_entry_bg)           
         self.custom_height.grid(column=1,
                                 row=3, 
                                 pady=7, 
@@ -434,22 +398,26 @@ class Window:
                                  sticky="w")
 
 
-                       
-            
-
     # button at bottom of window to run program
     def run_btn(self):
         self.run_btn = tk.Button(self.root,
                                    text="resize images",
                                    height=1,
                                    width=20,
-                                   bg="#BDFFFC",
+                                   bg=self.bg_color,
                                    font=('Helvetica 12'),
                                    command=self.check_dir_resize)
         self.run_btn.place(relx = 0.5,
                                 rely = 0.94,
                                 anchor = "center")
-    
+        
+
+    # button changes color when hovering with mouse
+    # code from https://www.geeksforgeeks.org/tkinter-button-that-changes-its-properties-on-hover/
+    def run_btn_hover(self):
+        self.run_btn.bind("<Enter>", func=lambda e: self.run_btn.config(background=self.resize_btn_hover))
+        self.run_btn.bind("<Leave>", func=lambda e: self.run_btn.config(background=self.bg_color))
+
 
     # runs program after resize button has been clicked
     def check_dir_resize(self):
@@ -460,6 +428,7 @@ class Window:
         # print(type(self.user_resize))
 
         if not self.filepath:
+            # TODO error pop up
             print("338, self.filepath must be selected")
         
         # if "width only" selected
@@ -469,6 +438,7 @@ class Window:
                 self.new_width = int(self.width_only.get())
 
                 if self.new_width < 10 or self.new_width > 3000:
+                    # TODO error pop up
                     raise ValueError
                 
                 self.check_save_opt()
@@ -550,11 +520,7 @@ class Window:
 
         # "save to new folder" chosen
         if user_save == 0:
-            try:
-                self.new_path = os.path.join(self.filepath, self.new_dir_name)
-                os.mkdir(self.new_path)
-            except FileExistsError:
-                pass
+            self.make_new_dir()
             self.check_double_bool = True
 
         # "Save to existing folder and keep old files" chosen
@@ -570,7 +536,32 @@ class Window:
         self.resize_images()
 
 
+    # creates new directory for new files if option is selected
+    def make_new_dir(self, counter=None):
+
+        # first check if new directory already exists
+        if counter == None:
+            try:
+                self.new_path = os.path.join(self.filepath, self.new_dir_name)
+                os.mkdir(self.new_path)
+            except FileExistsError:
+                self.make_new_dir(1)
+
+        # checks (after first) if directory exists
+        else:
+            try:
+                end = f"({counter})"
+                dir_name_end = self.new_dir_name+end
+                self.new_path = os.path.join(self.filepath, dir_name_end)
+                os.mkdir(self.new_path)
+
+            except FileExistsError:
+                counter += 1
+                self.make_new_dir(counter)
+
+
     # method that actually resizes and sacves the images
+    # code from https://stackoverflow.com/questions/10077844/resize-images-in-python used as template
     def resize_images(self):
 
         # keeps track of how many files resized and skipped
@@ -619,19 +610,14 @@ class Window:
                 else:
                     new_file_path = self.new_path+"/"+file 
 
-
-                # from resize.cli / / / // / / / ////////////////////
-                # save_location = self.new_path+"/"+file
-                # save_location = check_dbl(path_new, directory, file)
-                # img = Image.open(f_img)
-                # width, height = img.size
-                # img = img.resize((int(width * PERCENT), int(height * PERCENT)))
-                
-                # print(f"save_location = {save_location}")
                 img.save(new_file_path)
 
             else:
                 self.skipped_counter += 1
+        
+        # # resets "self.new_path" to currrent directory in case user wants to run program again
+        # self.new_path = os.path.join(self.filepath, self.new_dir_name)
+
 
 
     # checks the new directory if a file with the same name already exists
