@@ -8,10 +8,6 @@ import tkinter.messagebox as msgbox
 from tkinter import filedialog
 
 
-# TODO 
-# make pop that shows number of files resized and skipped
-
-
 class Window:
 
     def __init__(self):
@@ -222,7 +218,7 @@ class Window:
     # creates frame within "self.resize_frame" with the entry widgets for resizing
     def radio_resize_click(self):
         self.user_resize = self.resize_opt.get()
-        print(f"324, self.user_resize = {self.user_resize}")
+        # print(f"324, self.user_resize = {self.user_resize}")
 
         # creates frame within "self.resize_frame" with input boxes for the different options
         self.resize_input_frame = tk.Frame(self.resize_frame,
@@ -435,7 +431,7 @@ class Window:
         
         # if "width only" selected
         elif self.user_resize == 0:
-            print("342, resize == 0")
+            # print("342, resize == 0")
             try:
                 self.new_width = int(self.width_only.get())
 
@@ -514,25 +510,25 @@ class Window:
     def check_save_opt(self):
 
         # get the option for saving selected by user
-        user_save = self.save_opt.get()
+        self.user_save = self.save_opt.get()
 
-        # print(f"user_save = {user_save}")
-        # print(type(user_save))
+        # print(f"self.user_save = {self.user_save}")
+        # print(type(self.user_save))
 
         # "save to new folder" chosen
-        if user_save == 0:
+        if self.user_save == 0:
             self.make_new_dir()
             self.check_double_bool = True
             self.resize_images()
 
         # "Save to existing folder and keep old files" chosen
-        elif user_save == 1:
+        elif self.user_save == 1:
             self.new_path = self.filepath
             self.check_double_bool = True
             self.resize_images()
 
         # "Overwrite existing files" chosen
-        elif user_save == 2:
+        elif self.user_save == 2:
             self.new_path = self.filepath
             self.check_double_bool = False
             self.overwrite_check()
@@ -576,9 +572,8 @@ class Window:
     # reference: https://stackoverflow.com/questions/10077844/resize-images-in-python used as template
     def resize_images(self):
 
-        # keeps track of how many files resized and skipped
+        # keeps track of how many files resized
         self.change_counter = 0
-        self.skipped_counter = 0
     
         # Images get open, resized, and saved
         for file in os.listdir(self.filepath):
@@ -592,17 +587,17 @@ class Window:
 
                 # if "width only" is chosen
                 if self.user_resize == 0:
-                    print("467, resize_opt == 0")
+                    # print("467, resize_opt == 0")
                     self.new_height = int((img_height * self.new_width) / img_width)
 
                 # if "height only" is chosen
                 elif self.user_resize == 1:
-                    print("472, resize_opt == 1")
+                    # print("472, resize_opt == 1")
                     self.new_width = int((img_width * self.new_height) / img_height)
 
                 # if percent is chosen
                 elif self.user_resize == 2:
-                    print("477, resize_opt == 2")
+                    # print("477, resize_opt == 2")
                     self.new_width = int(img_width * (self.new_percent / 100))
                     self.new_height = int(img_height * (self.new_percent / 100))
 
@@ -625,9 +620,8 @@ class Window:
                     new_file_path = self.new_path+"/"+file 
 
                 img.save(new_file_path)
-
-            else:
-                self.skipped_counter += 1
+        
+        self.print_results()
 
 
     # checks the new directory if a file with the same name already exists
@@ -677,6 +671,21 @@ class Window:
     # reference: https://www.codespeedy.com/create-a-popup-window-in-tkinter-python/
     def error_pop_up(self, message):
         msgbox.showinfo("Image Resizer Error", message)
+
+
+    # shows how many files resized after program has been run
+    def print_results(self):
+
+        # accounts for number of resized files
+        if self.change_counter == 0:
+            message = f"""{self.change_counter} files have been resized
+                            \nThis program only resizes .jpg, .jpeg and .png files"""
+        elif self.change_counter == 1:
+            message = "1 file has been resized"
+        else:
+            message = f"{self.change_counter} files have been resized"
+
+        msgbox.showinfo("Results", message)
 
 
 def main():
