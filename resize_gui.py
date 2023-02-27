@@ -8,6 +8,9 @@ import tkinter.messagebox as msgbox
 from tkinter import filedialog
 
 
+# TODO do not create new dir if no images in selected dir
+
+
 class Window:
 
     def __init__(self):
@@ -425,7 +428,7 @@ class Window:
         # print(type(self.user_resize))
 
         if not self.filepath:
-            self.error_pop_up("Error:\nDirectory (folder) has not been selected.")
+            self.error_pop_up("Error:\n\nDirectory (folder) has not been selected.")
 
             # print("338, self.filepath must be selected")
         
@@ -441,7 +444,7 @@ class Window:
                     self.check_save_opt()
                 
             except ValueError:
-                self.error_pop_up("Error.\nWidth value must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")
+                self.error_pop_up("Error:\n\nWidth value must be between 10 and 3000.\n\nCan only be whole numbers (i.e. 300)")
 
                 # print("352, width value error")
                 # self.new_width = int(self.width_only.get())
@@ -463,7 +466,7 @@ class Window:
 
             except ValueError:
                 # print("373, height value error")
-                self.error_pop_up("Error.\nHeight value must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")
+                self.error_pop_up("Error:\n\nHeight value must be between 10 and 3000.\n\nCan only be whole numbers (i.e. 300)")
 
         # if user chose percentage
         elif self.user_resize == 2:
@@ -480,7 +483,7 @@ class Window:
                 
             except ValueError:
                 # print("384, percentage error")
-                self.error_pop_up("Error.\nPercent value must be between 1 and 200.\nCan be decimal or whole numbers (i.e. 50 or 50.0)")
+                self.error_pop_up("Error:\n\nPercent value must be between 1 and 200.\n\nCan be decimal or whole numbers (i.e. 50 or 50.0)")
 
         elif self.user_resize == 3:
             # print("395 resize == 3")
@@ -503,7 +506,7 @@ class Window:
                 
             except ValueError:
                 # print("409, height and width error")
-                self.error_pop_up("Error.\nWidth and height values must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")      
+                self.error_pop_up("Error:\n\nWidth and height values must be between 10 and 3000.\n\nCan only be whole numbers (i.e. 300)")      
 
 
     # checks which save option was chosen
@@ -670,7 +673,7 @@ class Window:
     # pop with error message
     # reference: https://www.codespeedy.com/create-a-popup-window-in-tkinter-python/
     def error_pop_up(self, message):
-        msgbox.showinfo("Image Resizer Error", message)
+        msgbox.showinfo("Image Resizer: ERROR", message)
 
 
     # shows how many files resized after program has been run
@@ -678,14 +681,13 @@ class Window:
 
         # accounts for number of resized files
         if self.change_counter == 0:
-            message = f"""{self.change_counter} files have been resized
-                            \nThis program only resizes .jpg, .jpeg and .png files"""
+            message = f"{self.change_counter} files have been resized\n\nThis program only resizes .jpg, .jpeg and .png files"
         elif self.change_counter == 1:
             message = "1 file has been resized"
         else:
             message = f"{self.change_counter} files have been resized"
 
-        msgbox.showinfo("Results", message)
+        msgbox.showinfo("Total images resized", message)
 
 
 def main():
