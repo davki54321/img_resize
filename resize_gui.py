@@ -8,6 +8,10 @@ import tkinter.messagebox as msgbox
 from tkinter import filedialog
 
 
+# TODO 
+# make pop that shows number of files resized and skipped
+
+
 class Window:
 
     def __init__(self):
@@ -519,18 +523,29 @@ class Window:
         if user_save == 0:
             self.make_new_dir()
             self.check_double_bool = True
+            self.resize_images()
 
         # "Save to existing folder and keep old files" chosen
         elif user_save == 1:
             self.new_path = self.filepath
             self.check_double_bool = True
+            self.resize_images()
 
         # "Overwrite existing files" chosen
         elif user_save == 2:
             self.new_path = self.filepath
             self.check_double_bool = False
+            self.overwrite_check()
 
-        self.resize_images()
+
+    # creates pop window asking user if they are sure they want to overwrite existing files
+    # reference: https://www.geeksforgeeks.org/create-a-yes-no-message-box-in-python-using-tkinter/
+    def overwrite_check(self):
+        are_you_sure = msgbox.askquestion('Overwrite exisiting files', 'Are you sure you want to overwrite the existing files?')
+        if are_you_sure == "yes":
+            self.resize_images()
+        else:
+            self.error_pop_up("Please select another option to save.")
 
 
     # creates new directory for new files if option is selected
