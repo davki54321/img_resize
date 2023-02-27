@@ -4,6 +4,7 @@
 from PIL import Image
 import os
 import tkinter as tk
+import tkinter.messagebox as msgbox
 from tkinter import filedialog
 
 
@@ -37,17 +38,6 @@ class Window:
         self.save_options()
         self.run_btn()
         self.run_btn_hover()
-
-
-    # TODO 
-    # create new folder if new folder already exists
-    # create pop up window for
-
-
-    # from https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
-    def limit_width_only(self, str_var, *args):
-        value = str_var.get()
-        if len(value) > 2: str_var.set(value[:4])
 
 
     # makes header or title of program
@@ -108,7 +98,7 @@ class Window:
                                     anchor = "center")
 
 
-    # method used to select directory with photos
+    # opens file manager for user to select directory with photos
     def select_dir(self):
         # get a directory path by user
         self.filepath=filedialog.askdirectory(initialdir=r"C:/",
@@ -139,7 +129,7 @@ class Window:
         self.save_label.place(relx = 0.2,
                                 rely = 0.08)
 
-        # separate frame for radio buttons        
+        # separate frame within "self.save_frame" for radio buttons with save options      
         self.save_btn_frame = tk.Frame(self.save_frame,
                                        bg=self.bg_color,
                                        height=70,
@@ -148,16 +138,16 @@ class Window:
                                     rely = 0.32)
         
         # creates radio buttons for save options
-        OPTIONS = [
+        SAVE_OPTIONS = [
             ("Save to new folder", 0),
             ("Save to existing folder and keep old files", 1),
             ("Overwrite existing files", 2)
         ]
 
+        # zero as second argument sets value at 0 (save in new folder)
         self.save_opt = tk.IntVar(self.save_btn_frame, 0)
-        # save_opt.set("0")
 
-        for text, number in OPTIONS:
+        for text, number in SAVE_OPTIONS:
             tk.Radiobutton(self.save_btn_frame,
                             bg=self.bg_color,
                             text=text,
@@ -199,7 +189,7 @@ class Window:
                                         rely = 0.25)
         
         # creates radio buttons for save options
-        OPTIONS = [
+        RESIZE_OPTIONS = [
             ("new width (original aspect ratio):", 0),
             ("new height (original aspect ratio):", 1),
             ("percentage:", 2),
@@ -208,8 +198,9 @@ class Window:
 
         self.resize_opt = tk.IntVar(self.resize_radio_frame, 0)
 
+        # "i" sets the row for .grid
         i = 0
-        for text, number in OPTIONS:
+        for text, number in RESIZE_OPTIONS:
             tk.Radiobutton(self.resize_radio_frame,
                             bg=self.bg_color,
                             padx=0,
@@ -237,7 +228,7 @@ class Window:
         self.resize_input_frame.place(relx = 0.5,
                                         rely = 0.25)
         
-        # from https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
+        # reference: https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
         # variables used to limit number of characters in entry widget
         self.limit_width = tk.StringVar()
         self.limit_height = tk.StringVar()
@@ -247,20 +238,20 @@ class Window:
         
         # if "width only" chosen
         if self.user_resize == 0:
-            self.limit_width.trace("w", lambda *args, passed = self.limit_width: self.limit_width_only(passed, *args))
+            self.limit_width.trace("w", lambda *args, passed = self.limit_width: self.limit_entry_char(passed, *args))
         
         # if "height only" chosen
         elif self.user_resize == 1:
-            self.limit_height.trace("w", lambda *args, passed = self.limit_height: self.limit_width_only(passed, *args))
+            self.limit_height.trace("w", lambda *args, passed = self.limit_height: self.limit_entry_char(passed, *args))
 
         # if "percent" chosen
         elif self.user_resize == 2:
-            self.limit_percent.trace("w", lambda *args, passed = self.limit_percent: self.limit_width_only(passed, *args))
+            self.limit_percent.trace("w", lambda *args, passed = self.limit_percent: self.limit_entry_char(passed, *args))
 
         # if "width and height" chosen
         elif self.user_resize == 3:
-            self.limit_width_custom.trace("w", lambda *args, passed = self.limit_width_custom: self.limit_width_only(passed, *args))
-            self.limit_height_custom.trace("w", lambda *args, passed = self.limit_height_custom: self.limit_width_only(passed, *args))
+            self.limit_width_custom.trace("w", lambda *args, passed = self.limit_width_custom: self.limit_entry_char(passed, *args))
+            self.limit_height_custom.trace("w", lambda *args, passed = self.limit_height_custom: self.limit_entry_char(passed, *args))
 
         # entry widget for width only
         self.width_only = tk.Entry(self.resize_input_frame, 
@@ -396,6 +387,12 @@ class Window:
                                  row=4,
                                  padx=14,
                                  sticky="w")
+        
+
+    # reference: https://stackoverflow.com/questions/33518978/python-how-to-limit-an-entry-box-to-2-characters-max
+    def limit_entry_char(self, str_var, *args):
+        value = str_var.get()
+        if len(value) > 2: str_var.set(value[:4])
 
 
     # button at bottom of window to run program
@@ -413,7 +410,7 @@ class Window:
         
 
     # button changes color when hovering with mouse
-    # code from https://www.geeksforgeeks.org/tkinter-button-that-changes-its-properties-on-hover/
+    # reference: https://www.geeksforgeeks.org/tkinter-button-that-changes-its-properties-on-hover/
     def run_btn_hover(self):
         self.run_btn.bind("<Enter>", func=lambda e: self.run_btn.config(background=self.resize_btn_hover))
         self.run_btn.bind("<Leave>", func=lambda e: self.run_btn.config(background=self.bg_color))
@@ -428,8 +425,9 @@ class Window:
         # print(type(self.user_resize))
 
         if not self.filepath:
-            # TODO error pop up
-            print("338, self.filepath must be selected")
+            self.error_pop_up("Error:\nDirectory (folder) has not been selected.")
+
+            # print("338, self.filepath must be selected")
         
         # if "width only" selected
         elif self.user_resize == 0:
@@ -438,72 +436,74 @@ class Window:
                 self.new_width = int(self.width_only.get())
 
                 if self.new_width < 10 or self.new_width > 3000:
-                    # TODO error pop up
                     raise ValueError
-                
-                self.check_save_opt()
+                else:
+                    self.check_save_opt()
                 
             except ValueError:
-                print("352, width value error")
+                self.error_pop_up("Error.\nWidth value must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")
+
+                # print("352, width value error")
                 # self.new_width = int(self.width_only.get())
                 # print(f"self.new_width = {self.new_width}")
                 # print(type(self.new_width))
 
-                # TODO 
-                # pop up window for error
-
         # if "height only" selected
         elif self.user_resize == 1:
-            print("362, resize == 1")
+            # print("362, resize == 1")
+
             try:
                 self.new_height = int(self.height_only.get())
 
                 # check to see that legitimate values entered
                 if self.new_height < 10 or self.new_height > 3000:
                     raise ValueError
-                
-                self.check_save_opt()
+                else:
+                    self.check_save_opt()
 
             except ValueError:
-                print("373, height value error")
-                # TODO
-                # pop up window for error
+                # print("373, height value error")
+                self.error_pop_up("Error.\nHeight value must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")
 
         # if user chose percentage
         elif self.user_resize == 2:
-            print("379, resize == 2")
+            # print("379, resize == 2")
+
             try:
                 self.new_percent = float(self.percent.get())
 
                 # check to see what legitimate value was entered
-                if self.new_percent < 1 or self.new_percent > 300:
+                if self.new_percent < 1 or self.new_percent > 200:
                     raise ValueError
-
-                self.check_save_opt()
+                else:
+                    self.check_save_opt()
                 
             except ValueError:
-                print("384, percentage error")
-                # TODO
-                # pop up window for error
+                # print("384, percentage error")
+                self.error_pop_up("Error.\nPercent value must be between 1 and 200.\nCan be decimal or whole numbers (i.e. 50 or 50.0)")
 
         elif self.user_resize == 3:
-            print("395 resize == 3")
+            # print("395 resize == 3")
+
             try:
                 self.new_width = int(self.custom_width.get())
                 self.new_height = int(self.custom_height.get())
 
                 # check to see legitimate values were entered
-                if self.new_width < 1:
+                if self.new_width < 10:
                     raise ValueError
-                if self.new_height < 1:
+                elif self.new_width > 3000:
                     raise ValueError
-                
-                self.check_save_opt()
+                elif self.new_height < 10:
+                    raise ValueError
+                elif self.new_height > 3000:
+                    raise ValueError
+                else:            
+                    self.check_save_opt()
                 
             except ValueError:
-                print("409, height and width error")
-                # TODO
-                # pop up window for error       
+                # print("409, height and width error")
+                self.error_pop_up("Error.\nWidth and height values must be between 10 and 3000.\nCan only be whole numbers (i.e. 300)")      
 
 
     # checks which save option was chosen
@@ -512,11 +512,8 @@ class Window:
         # get the option for saving selected by user
         user_save = self.save_opt.get()
 
-        # # creates new file path where resized image will be saved
-        # self.new_path = os.path.join(self.filepath, self.new_dir_name)
         # print(f"user_save = {user_save}")
         # print(type(user_save))
-        # print()
 
         # "save to new folder" chosen
         if user_save == 0:
@@ -561,7 +558,7 @@ class Window:
 
 
     # method that actually resizes and sacves the images
-    # code from https://stackoverflow.com/questions/10077844/resize-images-in-python used as template
+    # reference: https://stackoverflow.com/questions/10077844/resize-images-in-python used as template
     def resize_images(self):
 
         # keeps track of how many files resized and skipped
@@ -594,14 +591,16 @@ class Window:
                     self.new_width = int(img_width * (self.new_percent / 100))
                     self.new_height = int(img_height * (self.new_percent / 100))
 
-                # # if new height and new width chosen
-                # # (not needed because width and height already defined by user)
+                # KEEP KEEP KEEP !!!!!!!!!!!!!!!!!
+                # # if new height and new width chosen this last conditional is
+                # # not needed because width and height already defined by user
                 # elif self.user_resize == 3:
                 #     pass
                 
 
-                print(f"487, self.new_width = {self.new_width}")
-                print(f"\tself.new_height = {self.new_height}")
+                # print(f"487, self.new_width = {self.new_width}")
+                # print(f"\tself.new_height = {self.new_height}")
+
                 # stores resized image in variable
                 img = img.resize((self.new_width, self.new_height))
 
@@ -614,10 +613,6 @@ class Window:
 
             else:
                 self.skipped_counter += 1
-        
-        # # resets "self.new_path" to currrent directory in case user wants to run program again
-        # self.new_path = os.path.join(self.filepath, self.new_dir_name)
-
 
 
     # checks the new directory if a file with the same name already exists
@@ -637,7 +632,8 @@ class Window:
             
         # for every call after the first     
         else:
-            print(f"530, double_counter = {double_counter}")
+            # print(f"530, double_counter = {double_counter}")
+
             # checks ending of the file
             if file1.endswith(".jpeg"):
                 end = ".jpeg"
@@ -651,15 +647,21 @@ class Window:
             # "new_file" is the name of the directory and the file together
             new_file = self.new_path+"/"+numbered_file
 
-            print(f"numbered_file = {numbered_file}")
-            print(f"new_file = {new_file}")
-            print(f"file1 = {file1}")
+            # print(f"numbered_file = {numbered_file}")
+            # print(f"new_file = {new_file}")
+            # print(f"file1 = {file1}")
             
             if os.path.exists(new_file):
                 double_counter += 1
                 new_file = self.check_double(file1, double_counter)
             
             return new_file
+        
+
+    # pop with error message
+    # reference: https://www.codespeedy.com/create-a-popup-window-in-tkinter-python/
+    def error_pop_up(self, message):
+        msgbox.showinfo("Image Resizer Error", message)
 
 
 def main():
